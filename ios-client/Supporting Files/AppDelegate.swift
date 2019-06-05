@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  ios-client
 //
-//  Created by Владимир Коняхин on 05/06/2019.
+//  Created by Vsevolod Konyakhin on 05/06/2019.
 //  Copyright © 2019 Vsevolod Konyakhin. All rights reserved.
 //
 
@@ -16,6 +16,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.makeKeyAndVisible()
+        
+        window?.rootViewController = UINavigationController(rootViewController: ViewController())
+        
         return true
     }
 
