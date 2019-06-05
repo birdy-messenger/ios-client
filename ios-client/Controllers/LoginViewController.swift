@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, UITextFieldDelegate {
 
     let inputContainerView: UIView = {
         let view = UIView()
@@ -36,7 +36,45 @@ class LoginViewController: UIViewController {
     }()
     
     @objc func handleLogin() {
+        guard let email = emailTextField.text else {
+            NSLog("Error while parsing user email")
+            return
+        }
         
+        guard let name = nameTextField.text else {
+            NSLog("Error while parsing user name")
+            return
+        }
+        
+        guard let password = passwordTextField.text else {
+            NSLog("Error while parsing user password")
+            return
+        }
+        
+        Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
+            if error != nil {
+                NSLog("Error while creating new user")
+                print(error!)
+                return
+            }
+            
+            guard let userID = user?.user.uid else {
+                return
+            }
+            
+            let ref = Database.database().reference(fromURL: "https://birdy-de1c1.firebaseio.com/")
+            let userReference = ref.child("users").child(userID)
+            let values = ["name": name, "email": email]
+            userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
+                if error != nil {
+                    NSLog("Error while updating values in Database")
+                    print(error!)
+                    return
+                }
+            })
+        })
+        
+
     }
     
     let nameTextField: UITextField = {
@@ -98,6 +136,8 @@ class LoginViewController: UIViewController {
         setupLogoImageViewConstraints()
         
         view.backgroundColor = .white
+        
+        hideKeyboard()
     }
     
     func setupInputContainerViewConstraints() {
@@ -109,7 +149,9 @@ class LoginViewController: UIViewController {
         inputContainerView.addSubview(nameTextField)
         inputContainerView.addSubview(emailTextField)
         inputContainerView.addSubview(passwordTextField)
-
+        nameTextField.delegate = self
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
         
         nameTextField.topAnchor.constraint(equalTo: inputContainerView.topAnchor).isActive = true
         nameTextField.leftAnchor.constraint(equalTo: inputContainerView.leftAnchor, constant: 8).isActive = true
@@ -154,5 +196,25 @@ class LoginViewController: UIViewController {
         logoImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
         logoImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
     }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
+}
 
+
+extension UIViewController {
+    func hideKeyboard() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(UIViewController.dismissKeyboard))
+        
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
 }

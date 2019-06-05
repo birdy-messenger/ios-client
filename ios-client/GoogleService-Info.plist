@@ -7,7 +7,7 @@
 	<key>REVERSED_CLIENT_ID</key>
 	<string>com.googleusercontent.apps.694547014476-uovdadhod9oob1bjtojutebk6577l7jm</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCWonvj6TjQ1P1EYmYH0rOwlK9ujN5BN2E</string>
+	<string>AIzaSyAYdbbLN6mHRKg_wV9iUJdOJ41CD2uhUIk</string>
 	<key>GCM_SENDER_ID</key>
 	<string>694547014476</string>
 	<key>PLIST_VERSION</key>
@@ -19,15 +19,15 @@
 	<key>STORAGE_BUCKET</key>
 	<string>birdy-de1c1.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:694547014476:ios:e235ae8e9a9c56f0</string>
 	<key>DATABASE_URL</key>
