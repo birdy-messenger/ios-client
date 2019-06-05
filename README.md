@@ -4,5 +4,5 @@ Open-Source iOS Messenger
 ## App Logo
 ![Alt text](https://pp.userapi.com/c856032/v856032155/5bdd0/91rLCzC1Wqw.jpg)
 
-## Login Page
+## Register Page
 ![Alt text](https://pp.userapi.com/c850132/v850132155/1606a6/RtHf5Fzj0to.jpg)
