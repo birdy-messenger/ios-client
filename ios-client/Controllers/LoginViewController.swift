@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class LoginViewController: UIViewController {
 
@@ -28,8 +29,15 @@ class LoginViewController: UIViewController {
         button.layer.masksToBounds = true
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 22)
         button.backgroundColor = UIColor(red: 203/255, green: 29/255, blue: 30/255, alpha: 1.0)
+        
+        button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
+        
         return button
     }()
+    
+    @objc func handleLogin() {
+        
+    }
     
     let nameTextField: UITextField = {
         let textField = UITextField()
