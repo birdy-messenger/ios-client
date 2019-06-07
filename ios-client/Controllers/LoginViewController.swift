@@ -13,7 +13,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
     let inputContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 203/255, green: 185/255, blue: 118/255, alpha: 1.0)
+        view.backgroundColor = UIColor.sandy
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 5
         view.layer.masksToBounds = true
@@ -28,7 +28,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         button.layer.cornerRadius = 5
         button.layer.masksToBounds = true
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 22)
-        button.backgroundColor = UIColor(red: 203/255, green: 29/255, blue: 30/255, alpha: 1.0)
+        button.backgroundColor = UIColor.customRed
         
         button.addTarget(self, action: #selector(registerButtonPressed), for: .touchUpInside)
         
@@ -56,6 +56,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
             
             self.dismiss(animated: true, completion: nil)
+            ViewController().checkIfUserIsLoggedIn()
         }
     }
     
@@ -98,6 +99,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             })
             
             self.dismiss(animated: true, completion: nil)
+            ViewController().checkIfUserIsLoggedIn()
         })
         
 
@@ -107,7 +109,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let sc = UISegmentedControl(items: ["Login", "Register"])
         sc.translatesAutoresizingMaskIntoConstraints = false
         sc.selectedSegmentIndex = 1
-        sc.tintColor = UIColor(red: 203/255, green: 29/255, blue: 30/255, alpha: 1.0)
+        sc.tintColor = UIColor.customRed
         sc.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18)], for: .normal)
         sc.addTarget(self, action: #selector(handleLoginRegisterChange), for: .valueChanged)
         return sc
