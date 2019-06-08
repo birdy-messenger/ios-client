@@ -29,10 +29,6 @@ class ViewController: UITableViewController {
             let userID = Auth.auth().currentUser?.uid
             Database.database().reference().child("users").child(userID!).observeSingleEvent(of: .value, with: { (snapshot) in
                 if let dictionary = snapshot.value as? [String: AnyObject] {
-                    print(dictionary["name"] as! String)
-                    print(dictionary["name"] as! String)
-                    print(dictionary["name"] as! String)
-
                     self.title = (dictionary["name"] as! String)
                 }
             })
