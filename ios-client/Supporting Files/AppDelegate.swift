@@ -23,6 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window?.rootViewController = UINavigationController(rootViewController: ViewController())
         
+        UINavigationBar.appearance().barTintColor = UIColor.customRed
+        
         FirebaseApp.configure()
         
         return true 

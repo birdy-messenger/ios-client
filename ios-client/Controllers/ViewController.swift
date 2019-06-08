@@ -11,31 +11,35 @@ import Firebase
 
 class ViewController: UITableViewController {
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(ViewController.handleLogin))
-        navigationItem.leftBarButtonItem?.tintColor = .black
-        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(ViewController.handleLogout))
+        navigationItem.leftBarButtonItem?.tintColor = UIColor.white
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 23)]
+
         checkIfUserIsLoggedIn()
     }
     
     func checkIfUserIsLoggedIn() {
         if Auth.auth().currentUser == nil {
-            perform(#selector(handleLogin))
+            perform(#selector(handleLogout))
         } else {
             let userID = Auth.auth().currentUser?.uid
             Database.database().reference().child("users").child(userID!).observeSingleEvent(of: .value, with: { (snapshot) in
                 if let dictionary = snapshot.value as? [String: AnyObject] {
-                    self.navigationItem.title = dictionary["name"] as? String
+                    print(dictionary["name"] as! String)
+                    print(dictionary["name"] as! String)
+                    print(dictionary["name"] as! String)
+
+                    self.title = (dictionary["name"] as! String)
                 }
             })
         }
     }
     
-    @objc func handleLogin() {
+    @objc func handleLogout() {
         do {
             try Auth.auth().signOut()
         } catch let logoutError {
@@ -45,5 +49,6 @@ class ViewController: UITableViewController {
         let login = LoginViewController()
         present(login, animated: true, completion: nil)
     }
+        
 }
 
