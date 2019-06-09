@@ -56,7 +56,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
             
             self.dismiss(animated: true, completion: nil)
-            ViewController().checkIfUserIsLoggedIn()
+            MessageViewController().checkIfUserIsLoggedIn()
         }
     }
     
@@ -99,7 +99,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             })
             
             self.dismiss(animated: true, completion: nil)
-            ViewController().checkIfUserIsLoggedIn()
+            MessageViewController().checkIfUserIsLoggedIn()
         })
         
 
@@ -175,6 +175,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
         textField.textColor = .white
+        textField.isSecureTextEntry = true
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
