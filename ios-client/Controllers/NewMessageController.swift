@@ -22,6 +22,9 @@ class NewMessageController: UITableViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.leftBarButtonItem?.tintColor = UIColor.white
         
+        navigationController?.navigationBar.isTranslucent = false
+
+        
         fetchUser()
         
     }
@@ -33,9 +36,9 @@ class NewMessageController: UITableViewController {
     func fetchUser() {
         Database.database().reference().child("users").observe(.childAdded, with: { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject] {
-                let user = User(name: dictionary["name"] as! String, email: dictionary["email"] as! String)
+                let user = User(name: dictionary["name"] as! String, email: dictionary["email"] as! String, profileImageUrl: dictionary["profileImageUrl"] as! String)
                 self.users.append(user)
-                
+                                
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }

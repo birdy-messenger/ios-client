@@ -20,6 +20,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return view
     }()
     
+    let defaultProfileImage: String = "https://firebasestorage.googleapis.com/v0/b/birdy-de1c1.appspot.com/o/birb.png?alt=media&token=86225bef-2918-430d-89b5-460a3be33e79"
+    
     let registerButtonView: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Register", for: .normal)
@@ -55,6 +57,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 return
             }
             
+            
             self.dismiss(animated: true, completion: nil)
             MessageViewController().checkIfUserIsLoggedIn()
         }
@@ -89,7 +92,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             
             let ref = Database.database().reference(fromURL: "https://birdy-de1c1.firebaseio.com/")
             let userReference = ref.child("users").child(userID)
-            let values = ["name": name, "email": email]
+            let values = ["name": name, "email": email, "profileImageUrl": self.defaultProfileImage]
             userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
                 if error != nil {
                     NSLog("Error while updating values in Database")
