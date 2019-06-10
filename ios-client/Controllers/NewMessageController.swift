@@ -51,12 +51,18 @@ class NewMessageController: UITableViewController {
         return users.count
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 72
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID)
+        let cell = UserCell(style: .subtitle, reuseIdentifier: cellID)
         
         let user = users[indexPath.row]
         cell.textLabel?.text = user.name
         cell.detailTextLabel?.text = user.email
+        cell.profileImageView.loadImageUsingCacheWithUrlString(urlString: user.profileImage)
+        
         return cell
     }
 }
