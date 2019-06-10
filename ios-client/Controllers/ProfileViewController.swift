@@ -90,7 +90,6 @@ class ProfileViewController: UIViewController {
     }()
 
     @objc func doneButtonPressed() {
-        updateDataBase()
         dismiss(animated: true, completion: nil)
     }
     

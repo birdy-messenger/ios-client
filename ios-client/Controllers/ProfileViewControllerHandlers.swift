@@ -33,6 +33,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
         
         if let selectedImage = selectedImageFromPicker {
             profileImageView.image = selectedImage
+            updateDataBase()
         }
         
         dismiss(animated: true, completion: nil)
