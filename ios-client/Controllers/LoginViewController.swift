@@ -11,9 +11,6 @@ import Firebase
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
     
-    //TODO: replace using protocols
-    var messageController: MessageViewController?
-    
     let inputContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.sandy
