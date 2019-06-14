@@ -11,8 +11,6 @@ import Firebase
 
 class MessageViewController: UITableViewController {
     
-    var titleView = UILabel()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -26,7 +24,9 @@ class MessageViewController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(MessageViewController.handleNewMessage))
         navigationItem.rightBarButtonItem?.tintColor = UIColor.white
         
-        setupBarTitle()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         checkIfUserIsLoggedIn()
     }
     
@@ -40,29 +40,60 @@ class MessageViewController: UITableViewController {
         if Auth.auth().currentUser == nil {
             perform(#selector(handleLogout))
         } else {
-            let userID = Auth.auth().currentUser?.uid
-            Database.database().reference().child("users").child(userID!).observeSingleEvent(of: .value, with: { (snapshot) in
-                if let dictionary = snapshot.value as? [String: AnyObject] {
-                    self.setTitleText(to: dictionary["name"] as! String)
-                }
-            })
+            fetchUser()
         }
     }
     
-    func setupBarTitle() {
-        titleView.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 23)
-        let width = titleView.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)).width
-        titleView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: width, height: 500))
+    func fetchUser() {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            return
+        }
+        Database.database().reference().child("users").child(userID).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let user = User(name: dictionary["name"] as! String, email: dictionary["email"] as! String, profileImageUrl: dictionary["profileImageUrl"] as! String)
+                self.setupNavBar(with: user)
+            }
+        })
+    }
+    
+    func setupNavBar(with user: User) {
+        let titleView = UIView()
+        titleView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 115, height: 40))
+        
+        let titleLabel = UILabel()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.textColor = UIColor.white
+        titleLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 23)
+        titleLabel.textAlignment = .right
+        titleLabel.text = user.name
+        titleView.addSubview(titleLabel)
+        
+        
+        let profileImageView = UIImageView()
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.layer.cornerRadius = 20
+        profileImageView.clipsToBounds = true
+        profileImageView.loadImageUsingCacheWithUrlString(urlString: user.profileImage)
+        titleView.addSubview(profileImageView)
         
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(MessageViewController.titleWasTapped))
         titleView.isUserInteractionEnabled = true
         titleView.addGestureRecognizer(recognizer)
-    }
-    
-    func setTitleText(to name: String) {
-        titleView.text = name
+        
         self.navigationItem.titleView = titleView
+        
+        profileImageView.rightAnchor.constraint(equalTo: titleView.rightAnchor).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        profileImageView.topAnchor.constraint(equalTo: titleView.topAnchor).isActive = true
+        
+        titleLabel.leftAnchor.constraint(equalTo: titleView.leftAnchor).isActive = true
+        titleLabel.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
+        titleLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        titleLabel.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        
+        titleLabel.adjustsFontSizeToFitWidth = true
     }
     
     @objc private func titleWasTapped() {
