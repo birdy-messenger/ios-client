@@ -49,8 +49,8 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
         var fileName = userID!
         fileName.append(".png")
         let storageRef = Storage.storage().reference().child(fileName)
-        let uploaData = self.profileImageView.image!.pngData()
-        
+        let uploaData = self.profileImageView.image!.jpegData(compressionQuality: 0.1)
+
         storageRef.putData(uploaData!, metadata: nil) { (metadata, error) in
             if error != nil {
                 print(error!)

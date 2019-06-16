@@ -117,44 +117,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return sc
     }()
     
-    /*
-     refactor this function - bad code
-     */
     @objc func handleLoginRegisterChange() {
-        if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
-            registerButtonView.setTitle("Login", for: .normal)
-            
-            inputContainerViewHeightAnchor?.constant = 100
-            
-            nameTextFieldHeightAnchor?.isActive = false
-            emailTextFieldHeightAnchor?.isActive = false
-            passwordTextFieldHeightAnchor?.isActive = false
-            
-            nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: 0)
-            emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: 0.5)
-            passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: 0.5)
-            
-            nameTextFieldHeightAnchor?.isActive = true
-            emailTextFieldHeightAnchor?.isActive = true
-            passwordTextFieldHeightAnchor?.isActive = true
-            
-        } else {
-            registerButtonView.setTitle("Register", for: .normal)
-            
-            inputContainerViewHeightAnchor?.constant = 150
-            
-            nameTextFieldHeightAnchor?.isActive = false
-            emailTextFieldHeightAnchor?.isActive = false
-            passwordTextFieldHeightAnchor?.isActive = false
-            
-            nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: 1/3)
-            emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: 1/3)
-            passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: 1/3)
-            
-            nameTextFieldHeightAnchor?.isActive = true
-            emailTextFieldHeightAnchor?.isActive = true
-            passwordTextFieldHeightAnchor?.isActive = true
-        }
+        registerButtonView.setTitle(loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? "Login" : "Register", for: .normal)
+        inputContainerViewHeightAnchor?.constant = loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 100 : 150
+        
+        nameTextFieldHeightAnchor?.isActive = false
+        emailTextFieldHeightAnchor?.isActive = false
+        passwordTextFieldHeightAnchor?.isActive = false
+        
+        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 0 : 1/3)
+        emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 0.5 : 1/3)
+        passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 0.5 : 1/3)
+        
+        nameTextFieldHeightAnchor?.isActive = true
+        emailTextFieldHeightAnchor?.isActive = true
+        passwordTextFieldHeightAnchor?.isActive = true
     }
     
     let nameTextField: UITextField = {
