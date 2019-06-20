@@ -9,29 +9,26 @@
 import UIKit
 import Firebase
 
-class MessageViewController: UITableViewController {
+class MessageViewController: UITableViewController, NewMessageDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(MessageViewController.handleLogout))
-        navigationItem.leftBarButtonItem?.tintColor = UIColor.white
-        
-        navigationController?.navigationBar.isTranslucent = false
-        
-        let image = UIImage(named: "new_message_icon")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(MessageViewController.handleNewMessage))
-        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-        
+        setupNavigationBar()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         checkIfUserIsLoggedIn()
     }
     
+    override func viewWillLayoutSubviews() {
+        checkIfUserIsLoggedIn()
+    }
+    
     @objc func handleNewMessage() {
         let newMessageController = NewMessageController()
+        newMessageController.delegate = self
         let navController = UINavigationController(rootViewController: newMessageController)
         present(navController, animated: true, completion: nil)
     }
@@ -50,13 +47,34 @@ class MessageViewController: UITableViewController {
         }
         Database.database().reference().child("users").child(userID).observeSingleEvent(of: .value, with: { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject] {
-                let user = User(name: dictionary["name"] as! String, email: dictionary["email"] as! String, profileImageUrl: dictionary["profileImageUrl"] as! String)
-                self.setupNavBar(with: user)
+                let user = User(name: dictionary["name"] as! String, email: dictionary["email"] as! String, profileImageUrl: dictionary["profileImageUrl"] as! String, ID: snapshot.key)
+                self.setupNavigationBarTitle(with: user)
             }
         })
     }
     
-    func setupNavBar(with user: User) {
+    func showChatView(with user: User) {
+        let chatViewController = ChatViewController(with: user)
+        navigationController?.pushViewController(chatViewController, animated: true)
+    }
+    
+    func setupNavigationBar() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(MessageViewController.handleLogout))
+        navigationItem.leftBarButtonItem?.tintColor = UIColor.white
+        
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.tintColor = UIColor.white
+        
+        let backButtonImage = UIImage(named: "arrow_back_icon")
+        navigationController?.navigationBar.backIndicatorImage = backButtonImage
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItem.Style.plain, target: nil, action: nil)
+
+        let image = UIImage(named: "new_message_icon")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(MessageViewController.handleNewMessage))
+        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+    }
+    
+    func setupNavigationBarTitle(with user: User) {
         let titleView = UIView()
         titleView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 115, height: 40))
         

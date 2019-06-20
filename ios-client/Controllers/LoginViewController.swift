@@ -191,7 +191,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         setupRegisterButtonViewConstraints()
         
         view.addSubview(loginRegisterSegmentedControl)
-        setuploginRegisterSegmentedControlConstraints()
+        setupLoginRegisterSegmentedControlConstraints()
         
         view.addSubview(logoImageView)
         setupLogoImageViewConstraints()
@@ -267,7 +267,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         logoImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
     }
     
-    func setuploginRegisterSegmentedControlConstraints() {
+    func setupLoginRegisterSegmentedControlConstraints() {
         loginRegisterSegmentedControl.bottomAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: -12).isActive = true
         loginRegisterSegmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         loginRegisterSegmentedControl.widthAnchor.constraint(equalTo: inputContainerView.widthAnchor, multiplier: 1).isActive = true
@@ -280,8 +280,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
 
 }
-
-
 
 
 extension UIViewController {
