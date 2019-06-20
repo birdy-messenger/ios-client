@@ -95,6 +95,10 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate {
     }
     
     @objc func handleSend() {
+        guard inputTextField.text! != "" else {
+            return
+        }
+        
         let ref = Database.database().reference().child("messages")
         let childRef = ref.childByAutoId()
         let fromID = Auth.auth().currentUser?.uid
