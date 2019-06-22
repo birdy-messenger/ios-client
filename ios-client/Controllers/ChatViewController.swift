@@ -103,11 +103,25 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate {
         let childRef = ref.childByAutoId()
         let fromID = Auth.auth().currentUser?.uid
         let toID = correspondingUser.id
-        let time = Int(NSTimeIntervalSince1970)
-        let values = ["text": inputTextField.text!, "fromID": fromID!, "toID": toID, "time": time] as [String : Any]
-        childRef.updateChildValues(values)
+        let time = Int(Date().timeIntervalSince1970)
+        let values = ["text": inputTextField.text!, "fromID": fromID!, "toID": toID, "time": time, "messageIsRead": false] as [String : Any]
+        childRef.updateChildValues(values) { (error, ref) in
+            if error != nil {
+                print(error!)
+                return
+            }
+            
+            let userMessageRef = Database.database().reference().child("user-messages").child(fromID!).child(toID)
+            
+            let messageID = childRef.key!
+            userMessageRef.updateChildValues([messageID: 0])
+            
+            let recipientUserMessagesRef = Database.database().reference().child("user-messages").child(toID).child(fromID!)
+            recipientUserMessagesRef.updateChildValues([messageID: 1])
+            
+            self.inputTextField.text = nil
+        }
         
-        inputTextField.text = ""
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

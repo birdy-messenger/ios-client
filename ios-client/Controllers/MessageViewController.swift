@@ -12,27 +12,21 @@ import Firebase
 class MessageViewController: UITableViewController, NewMessageDelegate {
     
     var messages = [Message]()
+    var messagesDictionary = [String: Message]()
+    
+    let cellID = "Cell"
+    
+    var timer: Timer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         
         setupNavigationBar()
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        checkIfUserIsLoggedIn()
-//    }
-    
     override func viewDidAppear(_ animated: Bool) {
         checkIfUserIsLoggedIn()
-    }
-    
-    @objc func handleNewMessage() {
-        let newMessageController = NewMessageController()
-        newMessageController.delegate = self
-        let navController = UINavigationController(rootViewController: newMessageController)
-        present(navController, animated: true, completion: nil)
+        observeUserMessages()
     }
     
     func checkIfUserIsLoggedIn() {
@@ -55,15 +49,108 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         })
     }
     
-    func observeMessages() {
+    func observeUserMessages() {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
         
+        let ref = Database.database().reference().child("user-messages").child(uid)
+        ref.observe(.childAdded, with: { (snapshot) in
+            let userID = snapshot.key
+            
+            Database.database().reference().child("user-messages").child(uid).child(userID).observe(.childAdded, with: { (snapshot) in
+                
+                let messageID = snapshot.key
+                self.fetchMessage(with: messageID)
+            })
+            
+        })
+    }
+        
+    private func fetchMessage(with messageID: String) {
+        let messageReference = Database.database().reference().child("messages").child(messageID)
+        messageReference.observeSingleEvent(of: .value) { (snapshot) in
+            
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let message = Message(fromID: dictionary["fromID"] as! String, toID: dictionary["toID"] as! String, text: dictionary["text"] as! String, time: dictionary["time"] as! Double, isRead: dictionary["messageIsRead"] as! Bool)
+                
+                self.messagesDictionary[message.getChatPartnerID()] = message
+                
+                self.attemptReloadOfTable()
+            }
+            
+        }
     }
     
+    private func attemptReloadOfTable() {
+        self.timer?.invalidate()
+        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
+    }
+    
+    @objc func handleReloadTable() {
+        self.messages = Array(self.messagesDictionary.values)
+        self.messages.sort(by: { (message1, message2) -> Bool in
+            return message1.time > message2.time
+        })
+        
+        DispatchQueue.main.async(execute: {
+            self.tableView.reloadData()
+        })
+    }
+    
+    /*
+     functions that show other view controllers
+     */
     func showChatView(with user: User) {
         let chatViewController = ChatViewController(with: user)
         navigationController?.pushViewController(chatViewController, animated: true)
     }
     
+    @objc func handleNewMessage() {
+        let newMessageController = NewMessageController()
+        newMessageController.delegate = self
+        let navController = UINavigationController(rootViewController: newMessageController)
+        present(navController, animated: true, completion: nil)
+    }
+    
+    @objc private func titleWasTapped() {
+        let profile = ProfileViewController()
+        present(profile, animated: true, completion: nil)
+    }
+    
+    @objc func handleLogout() {
+        do {
+            try Auth.auth().signOut()
+        } catch let logoutError {
+            print(logoutError)
+        }
+        
+        let login = LoginViewController()
+        present(login, animated: true, completion: nil)
+    }
+    
+    /*
+    functions to override table view properties
+    */
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 72
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UserCell(style: .subtitle, reuseIdentifier: cellID)
+        
+        let message = messages[indexPath.row]
+        cell.message = message
+        
+        return cell
+    }
+    
+    /*
+    functions that set up the view
+    */
     func setupNavigationBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(MessageViewController.handleLogout))
         navigationItem.leftBarButtonItem?.tintColor = UIColor.white
@@ -98,7 +185,7 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         profileImageView.contentMode = .scaleAspectFill
         profileImageView.layer.cornerRadius = 20
         profileImageView.clipsToBounds = true
-        profileImageView.loadImageUsingCacheWithUrlString(urlString: user.profileImage)
+        profileImageView.loadImageUsingCache(with: user.profileImage)
         titleView.addSubview(profileImageView)
         
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(MessageViewController.titleWasTapped))
@@ -118,22 +205,6 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         titleLabel.widthAnchor.constraint(equalToConstant: 70).isActive = true
         
         titleLabel.adjustsFontSizeToFitWidth = true
-    }
-    
-    @objc private func titleWasTapped() {
-        let profile = ProfileViewController()
-        present(profile, animated: true, completion: nil)
-    }
-    
-    @objc func handleLogout() {
-        do {
-            try Auth.auth().signOut()
-        } catch let logoutError {
-            print(logoutError)
-        }
-        
-        let login = LoginViewController()
-        present(login, animated: true, completion: nil)
     }
     
 }

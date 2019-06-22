@@ -7,18 +7,25 @@
 //
 
 import Foundation
+import FirebaseAuth
 
 class Message: NSObject {
     let fromID: String
     let toID: String
     let text: String
-    let time: Int
+    let time: Double
+    var isRead = false
     
-    init(fromID: String, toID: String, text: String, time: Int) {
+    init(fromID: String, toID: String, text: String, time: Double, isRead: Bool) {
         self.fromID = fromID
         self.toID = toID
         self.text = text
         self.time = time
+        self.isRead = isRead
+    }
+    
+    func getChatPartnerID() -> String {
+        return fromID == Auth.auth().currentUser?.uid ? toID : fromID
     }
 }
 

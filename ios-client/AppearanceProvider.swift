@@ -15,4 +15,13 @@ extension UIColor {
     open class var customRed: UIColor {
         return UIColor(red: 203/255, green: 29/255, blue: 30/255, alpha: 1.0)
     }
+    open class var customPink: UIColor {
+        return UIColor(red: 255/255, green: 238/255, blue: 238/255, alpha: 1.0)
+    }
+}
+
+class Dot: UIView {
+    override func layoutSubviews() {
+        layer.cornerRadius = bounds.size.width/2
+    }
 }

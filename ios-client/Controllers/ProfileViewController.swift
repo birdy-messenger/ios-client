@@ -143,7 +143,7 @@ class ProfileViewController: UIViewController {
                 self.nameLabel.text = dictionary["name"] as? String
                 self.emailLabel.text = dictionary["email"] as? String
                 if let profileImageURL = dictionary["profileImageUrl"] as? String {
-                    self.profileImageView.loadImageUsingCacheWithUrlString(urlString: profileImageURL)
+                    self.profileImageView.loadImageUsingCache(with: profileImageURL)
                 }
             }
         })
