@@ -11,6 +11,8 @@ import Firebase
 
 class MessageViewController: UITableViewController, NewMessageDelegate {
     
+    var messages = [Message]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -18,11 +20,11 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         setupNavigationBar()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        checkIfUserIsLoggedIn()
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        checkIfUserIsLoggedIn()
+//    }
     
-    override func viewWillLayoutSubviews() {
+    override func viewDidAppear(_ animated: Bool) {
         checkIfUserIsLoggedIn()
     }
     
@@ -51,6 +53,10 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
                 self.setupNavigationBarTitle(with: user)
             }
         })
+    }
+    
+    func observeMessages() {
+        
     }
     
     func showChatView(with user: User) {

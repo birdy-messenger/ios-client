@@ -24,6 +24,15 @@ class ProfileViewController: UIViewController {
         return imageView
     }()
     
+    let backgroundProfileImageView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.customRed
+        view.layer.cornerRadius = 152
+        view.layer.masksToBounds = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     let bottomView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
@@ -53,6 +62,7 @@ class ProfileViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Profile"
         label.font = UIFont(name: "HelveticaNeue-Medium", size: 23)
+        label.textAlignment = .center
         return label
     }()
     
@@ -116,6 +126,9 @@ class ProfileViewController: UIViewController {
         view.addSubview(emailLabel)
         setupEmailLabelConstraints()
         
+        view.addSubview(backgroundProfileImageView)
+        setupBackroundProfileImageViewConstraints()
+        
         view.addSubview(profileImageView)
         setupProfileImageViewConstraints()
         
@@ -171,7 +184,7 @@ class ProfileViewController: UIViewController {
     
     func setupNameLabelConstraints() {
         nameLabel.topAnchor.constraint(equalTo: backgroundUserContainerView.topAnchor).isActive = true
-        nameLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        nameLabel.heightAnchor.constraint(equalToConstant: 60).isActive = true
         nameLabel.widthAnchor.constraint(equalTo: backgroundUserContainerView.widthAnchor).isActive = true
         nameLabel.centerXAnchor.constraint(equalTo: backgroundUserContainerView.centerXAnchor).isActive = true
     }
@@ -181,6 +194,13 @@ class ProfileViewController: UIViewController {
         emailLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
         emailLabel.widthAnchor.constraint(equalTo: backgroundUserContainerView.widthAnchor).isActive = true
         emailLabel.centerXAnchor.constraint(equalTo: backgroundUserContainerView.centerXAnchor).isActive = true
+    }
+    
+    func setupBackroundProfileImageViewConstraints() {
+        backgroundProfileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        backgroundProfileImageView.widthAnchor.constraint(equalToConstant: 304).isActive = true
+        backgroundProfileImageView.heightAnchor.constraint(equalToConstant: 304).isActive = true
+        backgroundProfileImageView.bottomAnchor.constraint(equalTo: backgroundUserContainerView.topAnchor, constant: -48).isActive = true
     }
     
     func setupProfileImageViewConstraints() {

@@ -9,10 +9,10 @@
 import Foundation
 
 class Message: NSObject {
-    var fromID: String
-    var toID: String
-    var text: String
-    var time: Int
+    let fromID: String
+    let toID: String
+    let text: String
+    let time: Int
     
     init(fromID: String, toID: String, text: String, time: Int) {
         self.fromID = fromID
