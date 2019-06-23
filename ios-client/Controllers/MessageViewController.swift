@@ -24,9 +24,12 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         setupNavigationBar()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        observeUserMessages()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         checkIfUserIsLoggedIn()
-        observeUserMessages()
     }
     
     func checkIfUserIsLoggedIn() {
@@ -123,6 +126,9 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
             print(logoutError)
         }
         
+        messages.removeAll()
+        messagesDictionary.removeAll()
+        tableView.reloadData()
         let login = LoginViewController()
         present(login, animated: true, completion: nil)
     }
@@ -146,6 +152,21 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         cell.message = message
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let message = messages[indexPath.row]
+        
+        let chatPartnerID = message.getChatPartnerID()
+        
+        let ref = Database.database().reference().child("users").child(chatPartnerID)
+        ref.observeSingleEvent(of: .value) { (snapshot) in
+            let dictionary = snapshot.value as! [String: AnyObject]
+            
+            let user = User(name: dictionary["name"] as! String, email: dictionary["email"] as! String, profileImageUrl: dictionary["profileImageUrl"] as! String, ID: chatPartnerID)
+            
+            self.showChatView(with: user)
+        }
     }
     
     /*
