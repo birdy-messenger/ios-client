@@ -29,7 +29,7 @@ class UserCell: UITableViewCell {
             detailTextLabel?.text = message!.text
             
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "hh:mm:ss a"
+            dateFormatter.dateFormat = "hh:mm a"
             timeLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: message!.time))
         }
     }
@@ -84,11 +84,6 @@ class UserCell: UITableViewCell {
         return dot
     }()
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -110,15 +105,13 @@ class UserCell: UITableViewCell {
             xPosForDetailedLabel = 64
         }
         
-        detailTextLabel?.frame = CGRect(x: CGFloat(xPosForDetailedLabel), y: yPosForDetailedLabel, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height)
+        var widthForDetailedTextLabel = detailTextLabel!.frame.width
+        let maxWidthForDetailedTextLabel = self.frame.width - 130
+        widthForDetailedTextLabel = widthForDetailedTextLabel > maxWidthForDetailedTextLabel ? maxWidthForDetailedTextLabel : widthForDetailedTextLabel
+        
+        detailTextLabel?.frame = CGRect(x: CGFloat(xPosForDetailedLabel), y: yPosForDetailedLabel, width: widthForDetailedTextLabel, height: detailTextLabel!.frame.height)
         
         customizeMessage()
-    }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-        // Configure the view for the selected state
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -134,12 +127,8 @@ class UserCell: UITableViewCell {
         
         timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
         timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 18).isActive = true
-        timeLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        timeLabel.widthAnchor.constraint(equalToConstant: 82).isActive = true
         timeLabel.heightAnchor.constraint(equalTo: (textLabel?.heightAnchor)!).isActive = true
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError()
     }
     
     func customizeMessage() {
@@ -157,6 +146,10 @@ class UserCell: UITableViewCell {
                 backgroundColor = UIColor.customPink
             }
         }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
 }
