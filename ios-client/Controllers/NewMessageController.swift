@@ -45,6 +45,9 @@ class NewMessageController: UITableViewController {
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 let user = User(name: dictionary["name"] as! String, email: dictionary["email"] as! String, profileImageUrl: dictionary["profileImageUrl"] as! String, ID: snapshot.key)
                 self.users.append(user)
+                self.users.sort(by: { (user1, user2) -> Bool in
+                    return user1.name < user2.name
+                })
                                 
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
