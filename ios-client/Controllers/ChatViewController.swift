@@ -48,10 +48,6 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
             }, withCancel: nil)
         }, withCancel: nil)
     }
-    
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
@@ -107,6 +103,10 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)], context: nil)
     }
     
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
     lazy var inputTextField: UITextField = {
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Enter message", attributes: [NSAttributedString.Key.foregroundColor: UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)])
@@ -116,11 +116,45 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         return textField
     }()
     
+    lazy var inputContainerView: UIView = {
+        let containerView = UIView()
+        containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50)
+        containerView.backgroundColor = UIColor.customRed
+        
+        let sendButton = UIButton(type: .system)
+        sendButton.setTitle("Send", for: UIControl.State())
+        sendButton.tintColor = .white
+        sendButton.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 20)
+        sendButton.translatesAutoresizingMaskIntoConstraints = false
+        sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
+        containerView.addSubview(sendButton)
+        
+        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10).isActive = true
+        sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+        sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        
+        containerView.addSubview(inputTextField)
+        
+        inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
+        inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+        inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
+        inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        
+        return containerView
+    }()
+    
+    override var inputAccessoryView: UIView? {
+        get {
+            return inputContainerView
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
         
-        collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 58, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         collectionView.alwaysBounceVertical = true
         collectionView.backgroundColor = UIColor.white
         collectionView.register(MessageCell.self, forCellWithReuseIdentifier: cellId)
@@ -128,8 +162,7 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         collectionView.keyboardDismissMode = .interactive
         
         setupNameBar()
-        setupInputComponents()
-        hideKeyboard()
+        setupKeyboardObservers()
     }
     
     func setupNameBar() {
@@ -152,36 +185,15 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         self.navigationItem.titleView = titleView
     }
     
-    func setupInputComponents() {
-        let containerView = UIView()
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.backgroundColor = UIColor.customRed
-        view.addSubview(containerView)
-        
-        containerView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        containerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        let sendButton = UIButton(type: .system)
-        sendButton.setTitle("Send", for: UIControl.State())
-        sendButton.tintColor = .white
-        sendButton.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 20)
-        sendButton.translatesAutoresizingMaskIntoConstraints = false
-        sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
-        containerView.addSubview(sendButton)
-        
-        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10).isActive = true
-        sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-        
-        containerView.addSubview(inputTextField)
-        
-        inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
-        inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
-        inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+    func setupKeyboardObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+    }
+    
+    @objc func handleKeyboardDidShow() {
+        if messages.count > 0 {
+            let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
+            self.collectionView?.scrollToItem(at: indexPath, at: .top, animated: true)
+        }
     }
     
     @objc func handleSend() {

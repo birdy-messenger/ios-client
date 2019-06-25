@@ -81,7 +81,7 @@ class MessageCell: UICollectionViewCell {
         
         timeLabel.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -7).isActive = true
         timeLabel.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -5).isActive = true
-        timeLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        timeLabel.widthAnchor.constraint(equalToConstant: 32).isActive = true
         timeLabel.heightAnchor.constraint(equalToConstant: 10).isActive = true
         
     }
