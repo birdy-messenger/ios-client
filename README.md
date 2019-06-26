@@ -16,7 +16,7 @@ Login Page | Register Page
 
 Message Screen | New Message Screen
 :-------------:|:-------------:
-<img src="https://pp.userapi.com/c857632/v857632698/12c5/9lfrDazpYdU.jpg">|<img src="https://pp.userapi.com/c857632/v857632698/12f7/lmN7seXYZRI.jpg">
+<img src="https://pp.userapi.com/c857632/v857632698/1305/SLr5HXS2J-U.jpg">|<img src="https://pp.userapi.com/c857632/v857632698/12f7/lmN7seXYZRI.jpg">
 
 Profile Screen | User Profile Picture Selected
 :-------------:|:-------------:
