@@ -75,8 +75,8 @@ class UserCell: UITableViewCell {
         return label
     }()
     
-    let redDot: Dot = {
-        let dot = Dot()
+    let redDot: UIDot = {
+        let dot = UIDot()
         dot.translatesAutoresizingMaskIntoConstraints = false
         dot.layer.masksToBounds = true
         dot.backgroundColor = UIColor.customRed

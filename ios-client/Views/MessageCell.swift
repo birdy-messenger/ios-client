@@ -14,7 +14,7 @@ class MessageCell: UICollectionViewCell {
         let tv = UITextView()
         tv.isEditable = false
         tv.font = UIFont.systemFont(ofSize: 16)
-        tv.textColor = .white
+        tv.textColor = .black
         tv.backgroundColor = .clear
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
@@ -45,6 +45,15 @@ class MessageCell: UICollectionViewCell {
         imageView.layer.masksToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
+    }()
+    
+    let redDot: UIDot = {
+        let dot = UIDot()
+        dot.translatesAutoresizingMaskIntoConstraints = false
+        dot.layer.masksToBounds = true
+        dot.backgroundColor = UIColor.customRed
+        dot.contentMode = .scaleAspectFill
+        return dot
     }()
     
     var bubbleWidthAnchor: NSLayoutConstraint?

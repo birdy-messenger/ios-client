@@ -40,12 +40,14 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
                 let message = Message(fromID: dictionary["fromID"] as! String, toID: dictionary["toID"] as! String, text: dictionary["text"] as! String, time: dictionary["time"] as! Double, isRead: dictionary["messageIsRead"] as! Bool)
                 
                 self.messages.append(message)
+                
                 DispatchQueue.main.async {
                     self.collectionView?.reloadData()
                     let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
                     self.collectionView?.scrollToItem(at: indexPath, at: .bottom, animated: true)
                 }
             }, withCancel: nil)
+            
         }, withCancel: nil)
     }
 
@@ -67,14 +69,12 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         
         if message.fromID == Auth.auth().currentUser?.uid {
             cell.bubbleView.backgroundColor = .customPink
-            cell.textView.textColor = .black
             cell.profileImageView.isHidden = true
             
             cell.bubbleViewRightAnchor?.isActive = true
             cell.bubbleViewLeftAnchor?.isActive = false
         } else {
             cell.bubbleView.backgroundColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1.0)
-            cell.textView.textColor = .black
             cell.profileImageView.isHidden = false
             
             cell.bubbleViewRightAnchor?.isActive = false
@@ -85,7 +85,7 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         cell.textView.text = message.text
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "hh:mm"
+        dateFormatter.dateFormat = "HH:mm"
         cell.timeLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: message.time))
     }
     

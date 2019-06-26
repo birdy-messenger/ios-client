@@ -20,7 +20,7 @@ extension UIColor {
     }
 }
 
-class Dot: UIView {
+class UIDot: UIView {
     override func layoutSubviews() {
         layer.cornerRadius = bounds.size.width/2
     }
