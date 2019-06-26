@@ -215,12 +215,12 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         
         self.navigationItem.titleView = titleView
         
-        profileImageView.rightAnchor.constraint(equalTo: titleView.rightAnchor).isActive = true
+        profileImageView.leftAnchor.constraint(equalTo: titleView.leftAnchor).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
         profileImageView.topAnchor.constraint(equalTo: titleView.topAnchor).isActive = true
         
-        titleLabel.leftAnchor.constraint(equalTo: titleView.leftAnchor).isActive = true
+        titleLabel.rightAnchor.constraint(equalTo: titleView.rightAnchor).isActive = true
         titleLabel.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         titleLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
         titleLabel.widthAnchor.constraint(equalToConstant: 70).isActive = true
