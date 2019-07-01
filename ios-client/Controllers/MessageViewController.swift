@@ -25,10 +25,12 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         observeUserMessages()
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         checkIfUserIsLoggedIn()
     }
     
@@ -136,7 +138,6 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
     /*
     functions to override table view properties
     */
-    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count
     }

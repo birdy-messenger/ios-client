@@ -103,10 +103,6 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)], context: nil)
     }
     
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
-    
     lazy var inputTextField: UITextField = {
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Enter message", attributes: [NSAttributedString.Key.foregroundColor: UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)])
@@ -150,9 +146,12 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         }
     }
     
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.backgroundColor = .white
         
         collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         collectionView.alwaysBounceVertical = true
