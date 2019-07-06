@@ -243,4 +243,5 @@ class ProfileViewController: UIViewController {
         bottomSplitView.topAnchor.constraint(equalTo: logOutButton.bottomAnchor).isActive = true
         bottomSplitView.heightAnchor.constraint(equalToConstant: 1).isActive = true
     }
+    
 }

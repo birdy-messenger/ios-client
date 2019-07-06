@@ -84,4 +84,5 @@ class NewMessageController: UITableViewController {
         
         return cell
     }
+    
 }
