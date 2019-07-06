@@ -9,23 +9,25 @@
 import UIKit
 import Firebase
 
-class MessageViewController: UITableViewController, NewMessageDelegate {
+class MessageViewController: UITableViewController, NewMessageDelegate, LogOutDelegate {
     
-    var messages = [Message]()
-    var messagesDictionary = [String: Message]()
+    private var messages = [Message]()
+    private var messagesDictionary = [String: Message]()
     
-    let cellID = "Cell"
+    private let cellID = "Cell"
     
-    var timer: Timer?
+    private var timer: Timer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupNavigationBar()
+        navigationController?.navigationBar.tintColor = UIColor.white
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        self.tabBarController?.navigationItem.title = "Chats"
         observeUserMessages()
     }
     
@@ -34,7 +36,8 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         checkIfUserIsLoggedIn()
     }
     
-    func checkIfUserIsLoggedIn() {
+    private func checkIfUserIsLoggedIn() {
+        //or userid is not in database
         if Auth.auth().currentUser == nil {
             perform(#selector(handleLogout))
         } else {
@@ -42,7 +45,7 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         }
     }
     
-    func fetchUser() {
+    private func fetchUser() {
         guard let userID = Auth.auth().currentUser?.uid else {
             return
         }
@@ -54,7 +57,7 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         })
     }
     
-    func observeUserMessages() {
+    private func observeUserMessages() {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         
         let ref = Database.database().reference().child("user-messages").child(uid)
@@ -104,21 +107,9 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
     /*
      functions that show other view controllers
      */
-    func showChatView(with user: User) {
+    internal func showChatView(with user: User) {
         let chatViewController = ChatViewController(with: user)
         navigationController?.pushViewController(chatViewController, animated: true)
-    }
-    
-    @objc func handleNewMessage() {
-        let newMessageController = NewMessageController()
-        newMessageController.delegate = self
-        let navController = UINavigationController(rootViewController: newMessageController)
-        present(navController, animated: true, completion: nil)
-    }
-    
-    @objc private func titleWasTapped() {
-        let profile = ProfileViewController()
-        present(profile, animated: true, completion: nil)
     }
     
     @objc func handleLogout() {
@@ -173,23 +164,7 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
     /*
     functions that set up the view
     */
-    func setupNavigationBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(MessageViewController.handleLogout))
-        navigationItem.leftBarButtonItem?.tintColor = UIColor.white
-        
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.tintColor = UIColor.white
-        
-        let backButtonImage = UIImage(named: "arrow_back_icon")
-        navigationController?.navigationBar.backIndicatorImage = backButtonImage
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItem.Style.plain, target: nil, action: nil)
-
-        let image = UIImage(named: "new_message_icon")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(MessageViewController.handleNewMessage))
-        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-    }
-    
-    func setupNavigationBarTitle(with user: User) {
+    private func setupNavigationBarTitle(with user: User) {
         let titleView = UIView()
         titleView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 115, height: 40))
         
@@ -199,8 +174,8 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         titleLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 23)
         titleLabel.textAlignment = .right
         titleLabel.text = user.name
-        titleView.addSubview(titleLabel)
         
+        titleView.addSubview(titleLabel)
         
         let profileImageView = UIImageView()
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -208,13 +183,10 @@ class MessageViewController: UITableViewController, NewMessageDelegate {
         profileImageView.layer.cornerRadius = 20
         profileImageView.clipsToBounds = true
         profileImageView.loadImageUsingCache(with: user.profileImage)
+        
         titleView.addSubview(profileImageView)
         
-        let recognizer = UITapGestureRecognizer(target: self, action: #selector(MessageViewController.titleWasTapped))
-        titleView.isUserInteractionEnabled = true
-        titleView.addGestureRecognizer(recognizer)
-        
-        self.navigationItem.titleView = titleView
+        self.tabBarController?.navigationItem.titleView = titleView
         
         profileImageView.leftAnchor.constraint(equalTo: titleView.leftAnchor).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true

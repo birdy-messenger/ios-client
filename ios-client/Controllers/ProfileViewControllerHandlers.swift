@@ -40,11 +40,11 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
         
     }
     
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+    internal func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
     
-    func updateDataBase() {
+    private func updateDataBase() {
         let userID = Auth.auth().currentUser?.uid
         var fileName = userID!
         fileName.append(".png")

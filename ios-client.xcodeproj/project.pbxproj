@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7800383122CAA1ED0097CE75 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7800383022CAA1ED0097CE75 /* TabBarController.swift */; };
+		7800383322CB6EEE0097CE75 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7800383222CB6EEE0097CE75 /* SettingsViewController.swift */; };
 		786257E722BB077700527778 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 786257E622BB077700527778 /* Message.swift */; };
 		78690AC622A7F0E100BACB91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78690AC522A7F0E100BACB91 /* AppDelegate.swift */; };
 		78690ACD22A7F0E300BACB91 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78690ACC22A7F0E300BACB91 /* Assets.xcassets */; };
@@ -27,6 +29,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7800383022CAA1ED0097CE75 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		7800383222CB6EEE0097CE75 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		786257E622BB077700527778 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		78690AC222A7F0E100BACB91 /* ios-client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78690AC522A7F0E100BACB91 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -113,6 +117,8 @@
 				78C37F7722AD5D6A000D7B47 /* ProfileViewController.swift */,
 				78C37F7922AE9454000D7B47 /* ProfileViewControllerHandlers.swift */,
 				78C37F7D22B7F2FE000D7B47 /* ChatViewController.swift */,
+				7800383022CAA1ED0097CE75 /* TabBarController.swift */,
+				7800383222CB6EEE0097CE75 /* SettingsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -276,9 +282,11 @@
 				78C37F6E22AB082A000D7B47 /* AppearanceProvider.swift in Sources */,
 				78690AC622A7F0E100BACB91 /* AppDelegate.swift in Sources */,
 				78C37F7C22AE9ACF000D7B47 /* Extension.swift in Sources */,
+				7800383322CB6EEE0097CE75 /* SettingsViewController.swift in Sources */,
 				78C37F7A22AE9454000D7B47 /* ProfileViewControllerHandlers.swift in Sources */,
 				78E5115422BEB3CA007D561A /* UserCell.swift in Sources */,
 				786257E722BB077700527778 /* Message.swift in Sources */,
+				7800383122CAA1ED0097CE75 /* TabBarController.swift in Sources */,
 				78C37F7822AD5D6A000D7B47 /* ProfileViewController.swift in Sources */,
 				78C37F7622AD5203000D7B47 /* MessageViewController.swift in Sources */,
 			);

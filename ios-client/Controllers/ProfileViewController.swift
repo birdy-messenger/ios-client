@@ -9,9 +9,15 @@
 import UIKit
 import Firebase
 
+protocol LogOutDelegate: class {
+    func handleLogout()
+}
+
 class ProfileViewController: UIViewController {
     
-    lazy var profileImageView: UIImageView = {
+    weak var delegate: LogOutDelegate?
+    
+    internal lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = nil
         imageView.contentMode = .scaleAspectFill
@@ -24,7 +30,7 @@ class ProfileViewController: UIViewController {
         return imageView
     }()
     
-    let backgroundProfileImageView: UIView = {
+    private let backgroundProfileImageView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.customRed
         view.layer.cornerRadius = 152
@@ -33,92 +39,84 @@ class ProfileViewController: UIViewController {
         return view
     }()
     
-    let bottomView: UIView = {
+    private let bottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.customPink
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    let backgroundUserContainerView: UIView = {
+    private let upperView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 5
-        view.layer.masksToBounds = true
-        return view
-    }()
-    
-    let barView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.customRed
+        view.backgroundColor = UIColor.customPink
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    let titleLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = UIColor.white
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Profile"
-        label.font = UIFont(name: "HelveticaNeue-Medium", size: 23)
-        label.textAlignment = .center
-        return label
-    }()
-    
-    let nameLabel: UILabel = {
+    private let nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.customRed
+        label.backgroundColor = UIColor.white
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: "HelveticaNeue-Medium", size: 50)
         label.textAlignment = NSTextAlignment.center
         return label
     }()
     
-    let emailLabel: UILabel = {
+    private let emailLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.customRed
+        label.backgroundColor = UIColor.white
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: "HelveticaNeue-Medium", size: 20)
         label.textAlignment = NSTextAlignment.center
         return label
     }()
     
-    let doneButtonView: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Done", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 5
-        button.layer.masksToBounds = true
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 22)
-        button.backgroundColor = UIColor.customRed
+    private let logOutButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.backgroundColor = .white
+        btn.setTitle("Log out", for: .normal)
+        btn.setTitleColor(.customRed, for: .normal)
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         
-        button.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(logOutButtonPressed), for: .touchUpInside)
         
-        return button
+        return btn
     }()
-
-    @objc func doneButtonPressed() {
-        dismiss(animated: true, completion: nil)
+    
+    @objc func logOutButtonPressed() {
+        self.delegate?.handleLogout()
+        tabBarController?.selectedIndex = 1
     }
     
+    private let upperSplitView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let bottomSplitView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     override func viewDidLoad() {
-        fetchUserInfo()
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        tabBarItem.selectedImage = tabBarItem.selectedImage?.withRenderingMode(.alwaysOriginal)
+        
+        fetchUserInfo()
+        
         view.addSubview(bottomView)
         setupBottomViewConstraints()
         
-        view.addSubview(barView)
-        view.addSubview(titleLabel)
-        setupBarViewConstraints()
-        
-        view.addSubview(backgroundUserContainerView)
-        setupBackgroundUserContainerViewConstraints()
-
-        view.addSubview(doneButtonView)
-        setupDoneButtonViewConstraints()
+        view.addSubview(upperView)
+        setupUpperViewConstraints()
         
         view.addSubview(nameLabel)
         setupNameLabelConstraints()
@@ -126,17 +124,30 @@ class ProfileViewController: UIViewController {
         view.addSubview(emailLabel)
         setupEmailLabelConstraints()
         
+        addSplitViewsForNameLabels()
+        
         view.addSubview(backgroundProfileImageView)
         setupBackroundProfileImageViewConstraints()
         
         view.addSubview(profileImageView)
         setupProfileImageViewConstraints()
         
-        view.backgroundColor = .white
+        view.addSubview(logOutButton)
+        view.addSubview(upperSplitView)
+        view.addSubview(bottomSplitView)
         
+        setupLogoutButtonConstraints()
+        setupSplitViewsConstraints()
     }
     
-    func fetchUserInfo() {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.tabBarController?.navigationItem.title = "Profile"
+        self.tabBarController?.navigationItem.titleView = nil
+    }
+    
+    private func fetchUserInfo() {
         let userID = Auth.auth().currentUser?.uid
         Database.database().reference().child("users").child(userID!).observeSingleEvent(of: .value, with: { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject] {
@@ -149,64 +160,87 @@ class ProfileViewController: UIViewController {
         })
     }
     
-    func setupBottomViewConstraints() {
-        bottomView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    private func setupBottomViewConstraints() {
+        bottomView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         bottomView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         bottomView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/3).isActive = true
         bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
     
-    func setupDoneButtonViewConstraints() {
-        doneButtonView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        doneButtonView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        doneButtonView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24).isActive = true
-        doneButtonView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50).isActive = true
+    private func setupUpperViewConstraints() {
+        upperView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        upperView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        upperView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        upperView.bottomAnchor.constraint(equalTo: bottomView.topAnchor).isActive = true
     }
     
-    func setupBackgroundUserContainerViewConstraints() {
-        backgroundUserContainerView.topAnchor.constraint(equalTo: bottomView.topAnchor).isActive = true
-        backgroundUserContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        backgroundUserContainerView.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        backgroundUserContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24).isActive = true
+    private func setupNameLabelConstraints() {
+        nameLabel.topAnchor.constraint(equalTo: bottomView.topAnchor).isActive = true
+        nameLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        nameLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        nameLabel.centerXAnchor.constraint(equalTo: bottomView.centerXAnchor).isActive = true
     }
     
-    func setupBarViewConstraints() {
-        barView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        barView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        barView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        barView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/12).isActive = true
-        
-        titleLabel.centerXAnchor.constraint(equalTo: barView.centerXAnchor).isActive = true
-        titleLabel.bottomAnchor.constraint(equalTo: barView.bottomAnchor, constant: -10).isActive = true
-        titleLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        titleLabel.widthAnchor.constraint(equalToConstant: 70).isActive = true
-    }
-    
-    func setupNameLabelConstraints() {
-        nameLabel.topAnchor.constraint(equalTo: backgroundUserContainerView.topAnchor).isActive = true
-        nameLabel.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        nameLabel.widthAnchor.constraint(equalTo: backgroundUserContainerView.widthAnchor).isActive = true
-        nameLabel.centerXAnchor.constraint(equalTo: backgroundUserContainerView.centerXAnchor).isActive = true
-    }
-    
-    func setupEmailLabelConstraints() {
+    private func setupEmailLabelConstraints() {
         emailLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor).isActive = true
         emailLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        emailLabel.widthAnchor.constraint(equalTo: backgroundUserContainerView.widthAnchor).isActive = true
-        emailLabel.centerXAnchor.constraint(equalTo: backgroundUserContainerView.centerXAnchor).isActive = true
+        emailLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        emailLabel.centerXAnchor.constraint(equalTo: bottomView.centerXAnchor).isActive = true
     }
     
-    func setupBackroundProfileImageViewConstraints() {
+    private func addSplitViewsForNameLabels() {
+        let upperSplitView = UIView()
+        upperSplitView.backgroundColor = UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)
+        upperSplitView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let bottomSplitView = UIView()
+        bottomSplitView.backgroundColor = UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)
+        bottomSplitView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(upperSplitView)
+        view.addSubview(bottomSplitView)
+        
+        upperSplitView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        upperSplitView.topAnchor.constraint(equalTo: nameLabel.topAnchor).isActive = true
+        upperSplitView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        upperSplitView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        bottomSplitView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        bottomSplitView.bottomAnchor.constraint(equalTo: emailLabel.bottomAnchor).isActive = true
+        bottomSplitView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        bottomSplitView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    }
+    
+    private func setupBackroundProfileImageViewConstraints() {
         backgroundProfileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         backgroundProfileImageView.widthAnchor.constraint(equalToConstant: 304).isActive = true
         backgroundProfileImageView.heightAnchor.constraint(equalToConstant: 304).isActive = true
-        backgroundProfileImageView.bottomAnchor.constraint(equalTo: backgroundUserContainerView.topAnchor, constant: -48).isActive = true
+        backgroundProfileImageView.centerYAnchor.constraint(equalTo: upperView.centerYAnchor).isActive = true
     }
     
-    func setupProfileImageViewConstraints() {
-        profileImageView.bottomAnchor.constraint(equalTo: backgroundUserContainerView.topAnchor, constant: -50).isActive = true
-        profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    private func setupProfileImageViewConstraints() {
+        profileImageView.centerXAnchor.constraint(equalTo: backgroundProfileImageView.centerXAnchor).isActive = true
+        profileImageView.centerYAnchor.constraint(equalTo: backgroundProfileImageView.centerYAnchor).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 300).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 300).isActive = true
+    }
+    
+    private func setupLogoutButtonConstraints() {
+        logOutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        logOutButton.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        logOutButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 50).isActive = true
+        logOutButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+    }
+    
+    private func setupSplitViewsConstraints() {
+        upperSplitView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        upperSplitView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        upperSplitView.bottomAnchor.constraint(equalTo: logOutButton.topAnchor).isActive = true
+        upperSplitView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        bottomSplitView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        bottomSplitView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        bottomSplitView.topAnchor.constraint(equalTo: logOutButton.bottomAnchor).isActive = true
+        bottomSplitView.heightAnchor.constraint(equalToConstant: 1).isActive = true
     }
 }

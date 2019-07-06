@@ -13,11 +13,11 @@ private let reuseIdentifier = "ChatCell"
 
 class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
     
-    let cellId = "cellId"
+    private let cellId = "cellId"
     
-    var correspondingUser: User
+    private var correspondingUser: User
     
-    var messages = [Message]()
+    private var messages = [Message]()
     
     init(with user: User) {
         self.correspondingUser = user
@@ -26,7 +26,19 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         observeMessages()
     }
     
-    func observeMessages() {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.tabBarController?.tabBar.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    private func observeMessages() {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         let toID = correspondingUser.id
         
@@ -89,7 +101,7 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         cell.timeLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: message.time))
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let message = messages[indexPath.row]
         let height = estimateFrame(for: message.text).height + 20
@@ -103,7 +115,7 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)], context: nil)
     }
     
-    lazy var inputTextField: UITextField = {
+    private lazy var inputTextField: UITextField = {
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Enter message", attributes: [NSAttributedString.Key.foregroundColor: UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)])
         textField.textColor = .white
@@ -112,7 +124,7 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         return textField
     }()
     
-    lazy var inputContainerView: UIView = {
+    private lazy var inputContainerView: UIView = {
         let containerView = UIView()
         containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50)
         containerView.backgroundColor = UIColor.customRed
@@ -164,7 +176,7 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         setupKeyboardObservers()
     }
     
-    func setupNameBar() {
+    private func setupNameBar() {
         let titleView = UIView()
         titleView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 115, height: 40))
         
@@ -184,7 +196,7 @@ class ChatViewController: UICollectionViewController, UITextFieldDelegate, UICol
         self.navigationItem.titleView = titleView
     }
     
-    func setupKeyboardObservers() {
+    private func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
     }
     

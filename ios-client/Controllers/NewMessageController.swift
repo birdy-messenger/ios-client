@@ -17,30 +17,34 @@ class NewMessageController: UITableViewController {
     
     weak var delegate: NewMessageDelegate?
     
-    let cellID = "Cell"
-    var users = [User]()
+    private let cellID = "Cell"
+    private var users = [User]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
-        
-        setupNavigationBar()
+
         fetchUser()
     }
     
-    @objc func handleCancel() {
-        dismiss(animated: true, completion: nil)
-    }
+    var freshLaunch = true
     
-    func setupNavigationBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
-        navigationItem.leftBarButtonItem?.tintColor = UIColor.white
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        navigationController?.navigationBar.isTranslucent = false
+        let textAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white, NSAttributedString.Key.font : UIFont(name: "HelveticaNeue-Medium", size: 21)]
+        navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
+        self.tabBarController?.navigationItem.title = "Birdy Users"
+        self.tabBarController?.navigationItem.titleView = nil
+        
+        if freshLaunch {
+            self.tabBarController?.selectedIndex = 1
+            freshLaunch = false
+        }
     }
     
-    func fetchUser() {
+    private func fetchUser() {
         Database.database().reference().child("users").observe(.childAdded, with: { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 let user = User(name: dictionary["name"] as! String, email: dictionary["email"] as! String, profileImageUrl: dictionary["profileImageUrl"] as! String, ID: snapshot.key)
@@ -58,8 +62,8 @@ class NewMessageController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        dismiss(animated: true, completion: nil)
         self.delegate?.showChatView(with: self.users[indexPath.row])
+        tabBarController?.selectedIndex = 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

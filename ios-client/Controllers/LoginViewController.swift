@@ -11,7 +11,7 @@ import Firebase
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
     
-    let inputContainerView: UIView = {
+    private let inputContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.sandy
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -20,9 +20,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return view
     }()
     
-    let defaultProfileImage: String = "https://firebasestorage.googleapis.com/v0/b/birdy-de1c1.appspot.com/o/birb.png?alt=media&token=86225bef-2918-430d-89b5-460a3be33e79"
+    private let defaultProfileImage: String = "https://firebasestorage.googleapis.com/v0/b/birdy-de1c1.appspot.com/o/birb.png?alt=media&token=86225bef-2918-430d-89b5-460a3be33e79"
     
-    let registerButtonView: UIButton = {
+    private let registerButtonView: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Register", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -41,7 +41,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? handleLogin() : handleRegister()
     }
     
-    func handleLogin() {
+    private func handleLogin() {
         guard let email = emailTextField.text else {
             NSLog("Error while parsing user email")
             return
@@ -62,7 +62,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func handleRegister() {
+    private func handleRegister() {
         guard let email = emailTextField.text else {
             NSLog("Error while parsing user email")
             return
@@ -107,7 +107,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
     }
     
-    lazy var loginRegisterSegmentedControl: UISegmentedControl = {
+    private lazy var loginRegisterSegmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl(items: ["Login", "Register"])
         sc.translatesAutoresizingMaskIntoConstraints = false
         sc.selectedSegmentIndex = 1
@@ -134,7 +134,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         passwordTextFieldHeightAnchor?.isActive = true
     }
     
-    let nameTextField: UITextField = {
+    private let nameTextField: UITextField = {
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Name", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
         textField.textColor = .white
@@ -142,7 +142,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return textField
     }()
     
-    let emailTextField: UITextField = {
+    private let emailTextField: UITextField = {
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
         textField.textColor = .white
@@ -150,7 +150,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return textField
     }()
     
-    let passwordTextField: UITextField = {
+    private let passwordTextField: UITextField = {
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
         textField.textColor = .white
@@ -159,21 +159,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return textField
     }()
     
-    let nameFieldSeparator: UIView = {
+    private let nameFieldSeparator: UIView = {
         let separator = UIView()
         separator.backgroundColor = .white
         separator.translatesAutoresizingMaskIntoConstraints = false
         return separator
     }()
     
-    let emailFieldSeparator: UIView = {
+    private let emailFieldSeparator: UIView = {
         let separator = UIView()
         separator.backgroundColor = .white
         separator.translatesAutoresizingMaskIntoConstraints = false
         return separator
     }()
     
-    let logoImageView: UIImageView = {
+    private let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "Logo")
         imageView.contentMode = .scaleAspectFill
@@ -201,12 +201,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         hideKeyboard()
     }
     
-    var inputContainerViewHeightAnchor: NSLayoutConstraint?
-    var nameTextFieldHeightAnchor: NSLayoutConstraint?
-    var emailTextFieldHeightAnchor: NSLayoutConstraint?
-    var passwordTextFieldHeightAnchor: NSLayoutConstraint?
+    private var inputContainerViewHeightAnchor: NSLayoutConstraint?
+    private var nameTextFieldHeightAnchor: NSLayoutConstraint?
+    private var emailTextFieldHeightAnchor: NSLayoutConstraint?
+    private var passwordTextFieldHeightAnchor: NSLayoutConstraint?
     
-    func setupInputContainerViewConstraints() {
+    private func setupInputContainerViewConstraints() {
         inputContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         inputContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         inputContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24).isActive = true
@@ -253,21 +253,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         emailFieldSeparator.widthAnchor.constraint(equalTo: inputContainerView.widthAnchor).isActive = true
     }
     
-    func setupRegisterButtonViewConstraints() {
+    private func setupRegisterButtonViewConstraints() {
         registerButtonView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         registerButtonView.topAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: 10).isActive = true
         registerButtonView.widthAnchor.constraint(equalTo: inputContainerView.widthAnchor).isActive = true
         registerButtonView.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
     
-    func setupLogoImageViewConstraints() {
+    private func setupLogoImageViewConstraints() {
         logoImageView.bottomAnchor.constraint(equalTo: loginRegisterSegmentedControl.topAnchor, constant: -12).isActive = true
         logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         logoImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
         logoImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
     }
     
-    func setupLoginRegisterSegmentedControlConstraints() {
+    private func setupLoginRegisterSegmentedControlConstraints() {
         loginRegisterSegmentedControl.bottomAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: -12).isActive = true
         loginRegisterSegmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         loginRegisterSegmentedControl.widthAnchor.constraint(equalTo: inputContainerView.widthAnchor, multiplier: 1).isActive = true
